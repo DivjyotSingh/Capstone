@@ -122,7 +122,7 @@ class _FormDetailsState extends State<FormDetails> {
                         () => {
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
-                                builder: (context) => HomeScreen(name: _c.text),
+                                builder: (context) => OldHomeScreen(),
                               ))
                             },
                         Colors.purple)

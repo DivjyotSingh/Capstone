@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key, required this.name});
-  String name;
+import 'main.dart';
+
+class OldHomeScreen extends StatefulWidget {
+  OldHomeScreen({super.key});
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<OldHomeScreen> createState() => _OldHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _OldHomeScreenState extends State<OldHomeScreen> {
   XFile? fileT;
   handleTakePhoto() async {
     Navigator.pop(context);
@@ -139,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hey ${widget.name} !!",
+                        "Hey $name !!",
                         style: TextStyle(
                             fontStyle: FontStyle.italic,
                             // fontWeight: FontWeight.bold,

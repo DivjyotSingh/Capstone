@@ -1,4 +1,5 @@
 import 'package:detect/home.dart';
+import 'package:detect/login.dart';
 import 'package:detect/textstyles.dart';
 import 'package:flutter/material.dart';
 
@@ -54,9 +55,7 @@ class Spash4 extends StatelessWidget {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => HomeScreen(
-                                        name: "HH",
-                                      ))));
+                                  builder: ((context) => OldHomeScreen())));
                         }),
                         child: Container(
                           padding: EdgeInsets.symmetric(

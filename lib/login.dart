@@ -6,18 +6,16 @@ import 'home.dart';
 
 import 'package:flutter_login/flutter_login.dart';
 
-
 const users = const {
   'divjyot@gmail.com': 'helloworld',
   'hunter@gmail.com': 'hunter',
 };
-const userName= const{
+const userName = const {
   'divjyot@gmail.com': 'divjyot',
   'hunter@gmail.com': 'divesh',
 };
 
 class LoginScreen extends StatefulWidget {
-  
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -31,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
     debugPrint('Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(data.name)) {
-        return 'User not exists';
+        return 'Incorrect username / password';
       }
       if (users[data.name] != data.password) {
         return 'Password does not match';
@@ -47,7 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
       signup = true;
       return null;
     });
-
   }
 
   Future<String?> _recoverPassword(String name) {
@@ -68,14 +65,16 @@ class _LoginScreenState extends State<LoginScreen> {
       onLogin: _authUser,
       onSignup: _signupUser,
       onSubmitAnimationCompleted: () {
-        if(signup){
+        if (signup) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => FormDetails(),
           ));
-        }else
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) =>  HomeScreen(name:username),
-        ));
+        } else {
+          name = "Vividh";
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => OldHomeScreen(),
+          ));
+        }
       },
       onRecoverPassword: _recoverPassword,
     );
