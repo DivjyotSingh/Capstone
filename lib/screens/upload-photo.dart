@@ -1,18 +1,14 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:detect/screens/results.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
-class Pair<T1, T2> {
-  final T1 a;
-  final T2 b;
-
-  Pair(this.a, this.b);
-}
+import '../models/pair.dart';
 
 class UploadPhotoScreen extends StatefulWidget {
   const UploadPhotoScreen({super.key, required this.image});
@@ -106,6 +102,13 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
     setState(() {
       isLoading = false;
     });
+
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ResultScreen(image: widget.image, result: answer)));
   }
 
   @override
