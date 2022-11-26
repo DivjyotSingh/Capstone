@@ -1,7 +1,18 @@
+import 'dart:ffi';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+
+class Pair<T1, T2> {
+  final T1 a;
+  final T2 b;
+
+  Pair(this.a, this.b);
+}
 
 class UploadPhotoScreen extends StatefulWidget {
   const UploadPhotoScreen({super.key, required this.image});
@@ -34,6 +45,67 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
         ),
       ),
     );
+  }
+
+  Future<Pair<String, int>> processImage() async {
+    print("Processing image started");
+    ImageProcessor imageProcessor = ImageProcessorBuilder()
+        .add(ResizeOp(64, 64, ResizeMethod.BILINEAR))
+        .build();
+
+    TensorImage tensorImage = TensorImage.fromFile(File(widget.image.path));
+    tensorImage = imageProcessor.process(tensorImage);
+
+    var temp = tensorImage.buffer
+        .asUint8List()
+        .map((e) => double.parse(e.toString()))
+        .toList();
+
+    var inputBuffer = Float32List.fromList(temp).reshape([1, 64, 64, 3]);
+
+    TensorBuffer probabilityBuffer =
+        TensorBuffer.createFixedSize(<int>[1, 7], TfLiteType.float32);
+
+    try {
+      Interpreter interpreter = await Interpreter.fromAsset("model.tflite");
+
+      interpreter.run(inputBuffer, probabilityBuffer.buffer);
+    } catch (e) {
+      print('Error loading model: ' + e.toString());
+    }
+
+    var results =
+        probabilityBuffer.buffer.asFloat32List().map((e) => e.round()).toList();
+
+    var index = results.indexOf(1);
+
+    var labels = [
+      Pair("Actinic_keratoses", 1),
+      Pair("Basal_cell_carcinoma", 1),
+      Pair("Benign_keratosis-like_lesions", 0),
+      Pair("Dermatofibroma", 0),
+      Pair("Melanocytic_nevi", 0),
+      Pair("Vascular_lesions", 0),
+      Pair("melanoma", 1),
+    ];
+
+    return labels[index];
+  }
+
+  bool isLoading = false;
+
+  Future<void> detectCancer() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await Future.delayed(Duration(seconds: 2));
+    var answer = await processImage();
+
+    print([answer.a, answer.b]);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -101,7 +173,10 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
                               SizedBox(
                                 height: 50,
                               ),
-                              buttonDisp("Detect", () {}, Colors.blue),
+                              isLoading
+                                  ? CircularProgressIndicator()
+                                  : buttonDisp(
+                                      "Detect", detectCancer, Colors.blue),
                               SizedBox(
                                 height: 10,
                               ),
