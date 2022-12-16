@@ -1,7 +1,9 @@
 import 'package:detect/screens/home.dart';
+import 'package:detect/screens/profile.dart';
 import 'package:detect/screens/upload-photo.dart';
 import 'package:diamond_bottom_bar/diamond_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Navbar extends StatefulWidget {
@@ -23,6 +25,7 @@ class _NavbarState extends State<Navbar> {
 
   handleTakePhoto() async {
     Navigator.pop(context);
+
     XFile? file = await ImagePicker()
         .pickImage(source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
     if (file != null)
@@ -34,13 +37,16 @@ class _NavbarState extends State<Navbar> {
 
   handleChooseFromGallery() async {
     Navigator.pop(context);
+    print(Get.arguments.toString());
     XFile? file = await ImagePicker()
         .pickImage(source: ImageSource.gallery, maxHeight: 675, maxWidth: 960);
     if (file != null)
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: ((context) => UploadPhotoScreen(image: file))));
+              builder: ((context) => UploadPhotoScreen(
+                    image: file,
+                  ))));
   }
 
   selectImage(parentContext) {
@@ -49,6 +55,7 @@ class _NavbarState extends State<Navbar> {
         builder: (context) {
           return SimpleDialog(
             title: const Text("Upload image"),
+            backgroundColor: Colors.white,
             children: <Widget>[
               SimpleDialogOption(
                 child: const Text("Photo with camera"),
@@ -82,8 +89,8 @@ class _NavbarState extends State<Navbar> {
         centerIcon: Icons.camera_alt_rounded,
         selectedIndex: _selectedIndex,
         onItemPressed: onPressed,
-        selectedColor: Colors.red,
-        selectedLightColor: Colors.redAccent,
+        selectedColor: Colors.teal.shade300,
+        selectedLightColor: Colors.tealAccent,
       ),
     );
   }
@@ -101,10 +108,7 @@ class _NavbarState extends State<Navbar> {
         if (index == 0) {
           _selectedWidget = const HomeScreen();
         } else if (index == 1) {
-          _selectedWidget = Container(
-            height: double.infinity,
-            color: Colors.red,
-          );
+          _selectedWidget = const ProfileScreen();
         } else if (index == 3) {
           _selectedWidget = Container();
         } else if (index == 4) {

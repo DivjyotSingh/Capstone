@@ -13,7 +13,7 @@ import '../models/pair.dart';
 class UploadPhotoScreen extends StatefulWidget {
   const UploadPhotoScreen({super.key, required this.image});
   final XFile image;
-
+  // final String email;
   @override
   State<UploadPhotoScreen> createState() => _UploadPhotoScreenState();
 }
@@ -99,6 +99,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
     var answer = await processImage();
 
     print([answer.a, answer.b]);
+    // print(widget.email.toString());
     setState(() {
       isLoading = false;
     });
@@ -115,8 +116,16 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF010101),
         elevation: 0,
+        centerTitle: false,
+        title: Transform(
+          transform: Matrix4.translationValues(250.0, 0.0, 0.0),
+          child: Image.asset(
+            "assets/images/logo.jpeg",
+            height: 80,
+          ),
+        ),
       ),
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -124,7 +133,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
           Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            color: Colors.blue,
+            color: Color(0xFF010101),
           ),
           Positioned(
             bottom: 0,
@@ -150,7 +159,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
                       'Upload photo',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade900,
+                          color: Color(0xFF010101),
                           fontSize: 30,
                           fontFamily: 'Roboto'),
                     ),
@@ -177,15 +186,18 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
                                 height: 50,
                               ),
                               isLoading
-                                  ? CircularProgressIndicator()
-                                  : buttonDisp(
-                                      "Detect", detectCancer, Colors.blue),
+                                  ? CircularProgressIndicator(
+                                      valueColor:
+                                          new AlwaysStoppedAnimation<Color>(
+                                              Color(0xFF010101)))
+                                  : buttonDisp("Detect", detectCancer,
+                                      Color(0xFFD9C1FF)),
                               SizedBox(
                                 height: 10,
                               ),
                               buttonDisp("Cancel", () {
                                 Navigator.pop(context);
-                              }, Colors.grey)
+                              }, Color(0xFF86D8CF))
                             ],
                           )),
                     ),

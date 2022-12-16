@@ -1,25 +1,67 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:detect/controllers/signup_controller.dart';
 import 'package:detect/screens/navbar.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 import '../models/pair.dart';
 
+bool isLoading = false;
+Future uploadImageResult(String image_path, String result1, int result2) async {
+  ////
+  print(result1);
+  print(result2);
+
+  String imageURL = '';
+  String uniquename = DateTime.now().millisecondsSinceEpoch.toString();
+  FirebaseStorage storageRef = FirebaseStorage.instance;
+  CollectionReference _reference =
+      FirebaseFirestore.instance.collection('detection_results');
+  Reference ref = storageRef.ref().child("images");
+  Reference refImage = ref.child(uniquename);
+  try {
+    await refImage.putFile(File(image_path));
+    imageURL = await refImage.getDownloadURL();
+    final prefs = await SharedPreferences.getInstance();
+
+    final String? email = prefs.getString("email");
+    print(imageURL);
+    print(email);
+
+    String type = result2 == 1 ? "Malignant" : "Benign";
+    Map<String, String> imageResultUpload = {
+      'type': type,
+      'disease': result1,
+      'image': imageURL,
+      'email': email.toString(),
+    };
+    _reference.add(imageResultUpload);
+  } catch (e) {
+    print(e);
+  }
+}
+
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key, required this.image, required this.result});
   final XFile image;
   final Pair<String, int> result;
+  final imageURL = '';
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  final controller = Get.put(SignupController());
   Widget buttonDisp(String s, Function() param1, Color c) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15.0),
@@ -50,6 +92,13 @@ class _ResultScreenState extends State<ResultScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        title: Transform(
+          transform: Matrix4.translationValues(250.0, 0.0, 0.0),
+          child: Image.asset(
+            "assets/images/logo.jpeg",
+            height: 80,
+          ),
+        ),
       ),
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -57,7 +106,7 @@ class _ResultScreenState extends State<ResultScreen> {
           Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            color: Colors.blue,
+            color: Color(0xFF010101),
           ),
           Positioned(
             bottom: 0,
@@ -66,7 +115,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(50)),
-                color: Colors.grey.shade100,
+                color: Colors.white,
               ),
               height: MediaQuery.of(context).size.height * 7 / 8,
               width: MediaQuery.of(context).size.width,
@@ -83,7 +132,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       'Detection Results',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade900,
+                          color: Color(0xFF010101),
                           fontSize: 20,
                           fontFamily: 'Roboto'),
                     ),
@@ -202,8 +251,35 @@ class _ResultScreenState extends State<ResultScreen> {
                                 height: 50,
                               ),
                               Center(
-                                child: buttonDisp(
-                                    "Save Result", () {}, Colors.blue),
+                                child: isLoading
+                                    ? CircularProgressIndicator(
+                                        valueColor:
+                                            new AlwaysStoppedAnimation<Color>(
+                                                Color(0xFF010101)))
+                                    : buttonDisp("Save Result", () async {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        await Future.delayed(
+                                            Duration(seconds: 2));
+                                        uploadImageResult(widget.image.path,
+                                            widget.result.a, widget.result.b);
+                                        const snackBar = SnackBar(
+                                          content: Text(
+                                            'Results upload successful!',
+                                            style: TextStyle(
+                                                color: Color(0xFFD9C1FF)),
+                                          ),
+                                          backgroundColor: Color(0xFF010101),
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Navbar()));
+                                      }, Color(0xFFD9C1FF)),
                               ),
                               SizedBox(
                                 height: 10,
@@ -214,7 +290,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Navbar()));
-                                }, Colors.grey),
+                                }, Color(0xFF86D8CF)),
                               )
                             ],
                           )),

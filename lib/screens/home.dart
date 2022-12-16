@@ -17,7 +17,18 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            color: Colors.blue,
+            color: Color(0xFF010101),
+          ),
+          Positioned(
+            top: -40,
+            left: -50,
+            child: Container(
+              child: Image.asset(
+                "assets/images/logo.jpeg",
+                height: 260,
+                gaplessPlayback: false,
+              ),
+            ),
           ),
           Positioned(
             bottom: 0,
@@ -26,9 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(50)),
-                color: Colors.grey.shade100,
+                color: Color(0xFFFFFFFF),
               ),
-              height: MediaQuery.of(context).size.height * 4 / 5,
+              height: MediaQuery.of(context).size.height * 3.5 / 5,
               width: MediaQuery.of(context).size.width,
               child: Padding(
                 padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -40,20 +51,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: 50,
+                          height: 30,
                         ),
                         Text(
                           'Early detection\nmakes a difference',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade900,
+                              color: Colors.black,
                               fontSize: 30,
                               fontFamily: 'Roboto'),
                         ),
                         SizedBox(height: 10),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Color(0xFFFFFF),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           padding: EdgeInsets.symmetric(
@@ -62,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF3ac5cf),
+                                  color: Color(0xFFD9C1FF),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 padding: EdgeInsets.symmetric(
@@ -115,16 +126,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                         left: 10.0, right: 10.0),
                                     child: Text('Read more',
                                         style: TextStyle(
-                                            color: Colors.teal,
+                                            color: Color(0xFF86D8CF),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500)),
                                   ),
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Colors.teal,
+                                    foregroundColor: Color(0xFF86D8CF),
                                     disabledForegroundColor:
                                         Colors.yellow.withOpacity(0.38),
                                     side: BorderSide(
-                                        color: Colors.teal, width: 2),
+                                        color: Color(0xFF86D8CF), width: 2),
                                     shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(25))),

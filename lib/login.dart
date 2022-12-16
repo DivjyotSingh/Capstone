@@ -25,16 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool signup = false;
   Duration get loginTime => Duration(milliseconds: 2250);
 
-  Future<String?> _authUser(LoginData data) {
+  Future<String?> _authUser(LoginData data) async{
     debugPrint('Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'Incorrect username / password';
-      }
-      if (users[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      username = userName[data.name]!;
       return null;
     });
   }
